@@ -1,0 +1,32 @@
+[
+  {
+    "id": 1,
+    "nom": "Dupont",
+    "prenom": "Jean",
+    "age": 32
+  },
+  {
+    "id": 2,
+    "nom": "Martin",
+    "prenom": "Sophie",
+    "age": 28
+  },
+  {
+    "id": 3,
+    "nom": "Durand",
+    "prenom": "Pierre",
+    "age": 45
+  },
+  {
+    "nom": "Oussama",
+    "prenom": "Ait Hmad",
+    "age": 21,
+    "id": 4
+  },
+  {
+    "nom": "Ait Hmad",
+    "prenom": "Oussama",
+    "age": 22,
+    "id": 5
+  }
+]

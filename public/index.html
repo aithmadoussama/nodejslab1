@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestion des Utilisateurs</title>
+
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f4f6f9;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 900px;
+        }
+
+        h1, h2 {
+            color: #2c3e50;
+            text-align: center;
+        }
+
+        .card {
+            background: #fff;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+
+        .user-form input {
+            width: 100%;
+            padding: 10px;
+            margin: 8px 0;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            transition: 0.3s;
+        }
+
+        .user-form input:focus {
+            border-color: #4CAF50;
+            outline: none;
+            box-shadow: 0 0 5px rgba(76,175,80,0.3);
+        }
+
+        button {
+            background: linear-gradient(45deg, #4CAF50, #45a049);
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: 0.3s;
+            font-weight: bold;
+        }
+
+        button:hover {
+            background: linear-gradient(45deg, #45a049, #3d8b40);
+            transform: translateY(-1px);
+        }
+
+        #users-list {
+            margin-top: 15px;
+        }
+
+        .user-item {
+            background: #fff;
+            padding: 12px 15px;
+            margin-bottom: 10px;
+            border-left: 5px solid #4CAF50;
+            border-radius: 6px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+            transition: 0.2s;
+        }
+
+        .user-item:hover {
+            transform: scale(1.02);
+            background: #f9f9f9;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+
+        <h1>Gestion des Utilisateurs</h1>
+
+        <div class="card user-form">
+            <h2>Ajouter un utilisateur</h2>
+            <form id="add-user-form">
+                <input type="text" id="nom" placeholder="Nom" required>
+                <input type="text" id="prenom" placeholder="Prénom" required>
+                <input type="number" id="age" placeholder="Âge">
+                <button type="submit">Ajouter</button>
+            </form>
+        </div>
+
+        <div class="card">
+            <h2>Liste des utilisateurs</h2>
+            <button id="load-users">Charger les utilisateurs</button>
+            <div id="users-list"></div>
+        </div>
+
+    </div>
+
+    <script>
+        // Charger les utilisateurs
+        document.getElementById('load-users').addEventListener('click', async () => {
+            try {
+                const response = await fetch('/api/users');
+                const users = await response.json();
+
+                const usersList = document.getElementById('users-list');
+                usersList.innerHTML = '';
+
+                users.forEach(user => {
+                    const userDiv = document.createElement('div');
+                    userDiv.className = "user-item";
+
+                    userDiv.innerHTML = `
+                        <strong>${user.prenom} ${user.nom}</strong><br>
+                        ${user.age} ans<br>
+                        ID: ${user.id}
+                    `;
+
+                    usersList.appendChild(userDiv);
+                });
+
+            } catch (error) {
+                console.error('Erreur:', error);
+            }
+        });
+
+        // Ajouter un utilisateur
+        document.getElementById('add-user-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const nom = document.getElementById('nom').value;
+            const prenom = document.getElementById('prenom').value;
+            const age = parseInt(document.getElementById('age').value) || 0;
+
+            try {
+                const response = await fetch('/api/users', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ nom, prenom, age })
+                });
+
+                const newUser = await response.json();
+
+                alert(`Utilisateur ajouté avec l'ID: ${newUser.id}`);
+
+                document.getElementById('add-user-form').reset();
+
+                // recharger la liste
+                document.getElementById('load-users').click();
+
+            } catch (error) {
+                console.error('Erreur:', error);
+            }
+        });
+    </script>
+
+</body>
+
+</html>
